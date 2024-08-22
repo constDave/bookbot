@@ -8,6 +8,20 @@ def read_file(file_path):
         return f.read()
 
 
+def sort_on(dict):
+    return dict["count"]
+
+
+def format_report_string(sorted_char_list):
+    report_string = ""
+    for char in sorted_char_list:
+        if char["char"].isalpha():
+            report_string += (
+                f"The '{char['char']}' character was found {char['count']} times\n"
+            )
+    return report_string
+
+
 def count_characters(file_contents):
     words = file_contents.split()
     characters_count = {}
@@ -18,19 +32,26 @@ def count_characters(file_contents):
                 characters_count[char] += 1
             else:
                 characters_count[char] = 1
-    return characters_count
+
+    # Convert the dictionary to a list of dictionaries
+    char_list = [
+        {"char": char, "count": count} for char, count in characters_count.items()
+    ]
+    sorted_char_list = sorted(char_list, key=sort_on, reverse=True)
+
+    return sorted_char_list
 
 
 def main():
     file_path = "books/frankenstein.txt"
     file_contents = read_file(file_path)
     word_count = count_words(file_contents)
-    characters_count = count_characters(file_contents)
-    print("--- Begin report of books/frankenstein.txt ---")
-    print("Letter occurrences:\n")
-    print(characters_count)
-    print("\n\n")
+
+    print("--- Begin report of books/frankenstein.txt --- \n")
     print(f"There are {word_count} words in this file.")
+    print(format_report_string(count_characters(file_contents)))
+    print("\n")
+    print("--- End report ---")
 
 
 if __name__ == "__main__":
